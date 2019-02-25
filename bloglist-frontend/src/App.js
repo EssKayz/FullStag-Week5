@@ -79,7 +79,13 @@ const App = () => {
 
   function newBlog() {
     console.log(user)
-    const newBlo = { author: blogAuthor.value, title: blogTitle.value, url: blogUrl.value, likes: 0, user: user.id }
+    const newBlo = {
+      author: blogAuthor.value,
+      title: blogTitle.value,
+      url: blogUrl.value,
+      likes: 0,
+      user: user.id
+    }
     blogService.create(newBlo)
   }
 
