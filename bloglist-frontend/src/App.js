@@ -11,9 +11,9 @@ const App = () => {
   const [user, setUser] = useState(null)
   const username = useField('text')
   const password = useField('text')
-  const [blogTitle, setBlogTitle] = useState('')
-  const [blogAuthor, setBlogAuthor] = useState('')
-  const [blogUrl, setBlogUrl] = useState('')
+  const blogTitle = useField('text')
+  const blogAuthor = useField('text')
+  const blogUrl = useField('text')
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -42,16 +42,19 @@ const App = () => {
       )
       blogService.setToken(user.token)
       setUser(user)
+
       console.log(user)
     } catch (exception) {
+      username.reset()
+      password.reset()
       console.log(exception)
     }
   }
 
   const loginForm = () => (
     <LoginForm
-      setUsername={ username.onChange }
-      setPassword={ password.onChange }
+      setUsername={username.onChange}
+      setPassword={password.onChange}
       handleLogin={handleLogin}
       username={username.value} password={password.value} />
   )
@@ -59,6 +62,8 @@ const App = () => {
   function logout() {
     window.localStorage.clear()
     window.location.reload(true)
+    username.reset()
+    password.reset()
   }
 
   const blogForm = () => (
@@ -74,7 +79,7 @@ const App = () => {
 
   function newBlog() {
     console.log(user)
-    const newBlo = { author: blogAuthor, title: blogTitle, url: blogUrl, likes: 0, user: user.id }
+    const newBlo = { author: blogAuthor.value, title: blogTitle.value, url: blogUrl.value, likes: 0, user: user.id }
     blogService.create(newBlo)
   }
 
@@ -86,27 +91,27 @@ const App = () => {
           Title
           <input
             type="text"
-            value={blogTitle}
+            value={blogTitle.value}
             name="Title"
-            onChange={({ target }) => setBlogTitle(target.value)}
+            onChange={blogTitle.onChange}
           />
         </div>
         <div>
           Author
           <input
             type="text"
-            value={blogAuthor}
+            value={blogAuthor.value}
             name="Author"
-            onChange={({ target }) => setBlogAuthor(target.value)}
+            onChange={blogAuthor.onChange}
           />
         </div>
         <div>
           URL
           <input
             type="text"
-            value={blogUrl}
+            value={blogUrl.value}
             name="URL"
-            onChange={({ target }) => setBlogUrl(target.value)}
+            onChange={blogUrl.onChange}
           />
         </div>
         <p><button type="submit">Create</button></p>
