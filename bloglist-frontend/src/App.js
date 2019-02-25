@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
+import { useField } from './hooks'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import Togglable from './components/Togglable'
@@ -8,8 +9,8 @@ import LoginForm from './components/LoginForm'
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
+  const username = useField('text')
+  const password = useField('text')
   const [blogTitle, setBlogTitle] = useState('')
   const [blogAuthor, setBlogAuthor] = useState('')
   const [blogUrl, setBlogUrl] = useState('')
@@ -33,23 +34,26 @@ const App = () => {
     event.preventDefault()
     try {
       const user = await loginService.login({
-        username, password
+        username: username.value, password: password.value
       })
+      console.log(user)
       window.localStorage.setItem(
         'loggedBlogappUser', JSON.stringify(user)
       )
       blogService.setToken(user.token)
       setUser(user)
       console.log(user)
-      setUsername('')
-      setPassword('')
     } catch (exception) {
       console.log(exception)
     }
   }
 
   const loginForm = () => (
-    <LoginForm setUsername={setUsername} setPassword={setPassword} handleLogin={handleLogin} username={username} password={password} />
+    <LoginForm
+      setUsername={ username.onChange }
+      setPassword={ password.onChange }
+      handleLogin={handleLogin}
+      username={username.value} password={password.value} />
   )
 
   function logout() {
